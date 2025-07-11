@@ -10,6 +10,7 @@ const app = express();
 
 // Import routes
 const authRoutes = require("./routes/auth.routes");
+const userRoutes = require("./routes/user.routes");
 
 // Import middleware
 const errorHandler = require("./middleware/errorHandler");
@@ -30,6 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", userRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {

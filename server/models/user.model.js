@@ -3,6 +3,85 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
+// Address sub-schema for flexibility
+const addressSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ["home", "work", "billing", "shipping", "other"],
+      default: "shipping",
+    },
+    isDefault: {
+      type: Boolean,
+      default: false,
+    },
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    company: {
+      type: String,
+      trim: true,
+    },
+    street: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    apartment: {
+      type: String,
+      trim: true,
+    },
+    city: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    state: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    zipCode: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    country: {
+      type: String,
+      required: true,
+      trim: true,
+      default: "United States",
+    },
+    phone: {
+      type: String,
+      trim: true,
+    },
+    instructions: {
+      type: String,
+      trim: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// Ensure only one default address per type
+addressSchema.pre("save", function (next) {
+  if (this.isDefault) {
+    // This will be handled in the parent document
+    return next();
+  }
+  next();
+});
+
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -29,6 +108,7 @@ const userSchema = new mongoose.Schema(
       firstName: { type: String, required: true, trim: true },
       lastName: { type: String, required: true, trim: true },
     },
+    addresses: [addressSchema],
     isVerified: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     emailVerificationToken: String,
@@ -43,6 +123,34 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Ensure only one default address per type
+userSchema.pre("save", function (next) {
+  if (this.addresses && this.addresses.length > 0) {
+    // Group addresses by type
+    const addressesByType = {};
+    this.addresses.forEach((addr) => {
+      if (!addressesByType[addr.type]) {
+        addressesByType[addr.type] = [];
+      }
+      addressesByType[addr.type].push(addr);
+    });
+
+    // Ensure only one default per type
+    Object.keys(addressesByType).forEach((type) => {
+      const typeAddresses = addressesByType[type];
+      const defaultAddresses = typeAddresses.filter((addr) => addr.isDefault);
+
+      if (defaultAddresses.length > 1) {
+        // Keep only the first default, unset others
+        for (let i = 1; i < defaultAddresses.length; i++) {
+          defaultAddresses[i].isDefault = false;
+        }
+      }
+    });
+  }
+  next();
+});
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
