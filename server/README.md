@@ -108,6 +108,7 @@ A robust, scalable backend for the ReadJunction ecommerce platform, built with *
 - `PATCH  /api/v1/products/admin/:id/approval-status` — Update product approval status
 - `PATCH  /api/v1/products/admin/bulk-approve` — Bulk approve products
 - `PATCH  /api/v1/products/admin/bulk-reject` — Bulk reject products
+- `PATCH  /api/v1/products/admin/:id/featured` — Set or unset product as featured
 - `GET    /api/v1/products/admin/dashboard` — Get admin dashboard stats
 - `GET    /api/v1/products/admin/all` — Get all products for admin (with approval status)
 

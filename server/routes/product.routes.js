@@ -213,4 +213,17 @@ router.patch(
   bulkRejectProducts
 );
 
+/**
+ * @route   PATCH /api/products/admin/:id/featured
+ * @desc    Set or unset product as featured (Admin only)
+ * @access  Private (Admin only)
+ */
+router.patch(
+  "/admin/:id/featured",
+  protect,
+  authorize("admin"),
+  validate(productSchemas.setFeatured),
+  require("../controllers/product.controller").setProductFeatured
+);
+
 module.exports = router;

@@ -377,6 +377,11 @@ const adminProductQuerySchema = Joi.object({
   sortOrder: Joi.string().valid("asc", "desc").default("desc"),
 });
 
+// Set featured schema (admin)
+const setFeatured = Joi.object({
+  featured: Joi.boolean().required(),
+});
+
 module.exports = {
   productSchemas: {
     createProduct: createProductSchema,
@@ -391,4 +396,5 @@ module.exports = {
     bulkRejectProducts: bulkRejectProductsSchema,
     adminProductQuery: adminProductQuerySchema,
   },
+  setFeatured,
 };

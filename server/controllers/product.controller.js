@@ -860,6 +860,23 @@ const updateProductApprovalStatus = asyncHandler(async (req, res) => {
     );
 });
 
+/**
+ * @desc    Set or unset product as featured (Admin only)
+ * @route   PATCH /api/products/admin/:id/featured
+ * @access  Private (Admin only)
+ */
+const setProductFeatured = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { featured } = req.body;
+  const product = await Product.findById(id);
+  if (!product) throw new ApiError(404, "Product not found");
+  product.featured = featured;
+  await product.save();
+  return res
+    .status(200)
+    .json(new ApiResponse(200, product, "Product featured status updated"));
+});
+
 module.exports = {
   createProduct,
   getProducts,
@@ -880,4 +897,5 @@ module.exports = {
   getAdminDashboard,
   getAllProductsForAdmin,
   updateProductApprovalStatus,
+  setProductFeatured,
 };
