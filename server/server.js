@@ -11,6 +11,7 @@ const app = express();
 // Import routes
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
+const productRoutes = require("./routes/product.routes");
 
 // Import middleware
 const errorHandler = require("./middleware/errorHandler");
@@ -32,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/products", productRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {

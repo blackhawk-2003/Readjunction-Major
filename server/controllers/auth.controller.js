@@ -41,37 +41,57 @@ const register = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     role = "buyer",
+    // Handle both nested businessInfo and flat fields
+    businessInfo,
     businessName,
     businessDescription,
     businessAddress,
     taxId,
     bankDetails,
   } = req.body;
+
   const userExists = await User.findOne({ email });
   if (userExists) {
     res.status(400);
     throw new Error("User already exists");
   }
+
   // If registering as seller, require business info
   let user, seller;
   if (role === "seller") {
-    if (!businessName || !businessAddress || !taxId || !bankDetails) {
+    // Extract business info from nested object or use flat fields
+    const businessData = businessInfo || {
+      businessName,
+      businessDescription,
+      businessAddress,
+      taxId,
+      bankDetails,
+    };
+
+    if (
+      !businessData.businessName ||
+      !businessData.businessAddress ||
+      !businessData.taxId ||
+      !businessData.bankDetails
+    ) {
       res.status(400);
       throw new Error("Missing business information for seller registration");
     }
+
     user = await User.create({
       email,
       password,
       role,
       profile: { firstName, lastName },
     });
+
     seller = await Seller.create({
       userId: user._id,
-      businessName,
-      businessDescription,
-      businessAddress,
-      taxId,
-      bankDetails,
+      businessName: businessData.businessName,
+      businessDescription: businessData.businessDescription,
+      businessAddress: businessData.businessAddress,
+      taxId: businessData.taxId,
+      bankDetails: businessData.bankDetails,
     });
   } else {
     user = await User.create({
@@ -81,14 +101,17 @@ const register = asyncHandler(async (req, res) => {
       profile: { firstName, lastName },
     });
   }
+
   const token = generateToken(user._id);
   const refreshToken = generateRefreshToken(user._id);
+
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
+
   res.status(201).json({
     success: true,
     data: {
@@ -107,7 +130,7 @@ const register = asyncHandler(async (req, res) => {
             isApproved: seller.isApproved,
           }
         : undefined,
-      token,
+      accessToken: token,
     },
   });
 });
