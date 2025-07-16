@@ -1,0 +1,217 @@
+.footer {
+  background: linear-gradient(90deg, #f6f5ef 60%, #e9f0e1 100%);
+  border-radius: 2rem 2rem 0 0;
+  box-shadow: 0 -2px 24px rgba(0, 0, 0, 0.04);
+  margin-top: 3.5rem;
+  padding: 2.2rem 1.5rem 1.2rem 1.5rem;
+  max-width: 1200px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer__main--grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.2rem;
+  align-items: start;
+}
+
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.footer__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 100%;
+}
+
+.footer__list li {
+  width: 100%;
+}
+
+.footer__list a {
+  color: var(--text-dark);
+  text-decoration: none;
+  font-size: 1.05rem;
+  transition: color 0.2s;
+  text-align: left;
+  display: block;
+  padding: 0.1rem 0;
+}
+
+.footer__list a:hover {
+  color: var(--primary);
+}
+
+.footer__main--grid > .footer__col {
+  margin-bottom: 0;
+}
+
+.footer__brand {
+  gap: 1.2rem;
+}
+
+.footer__logo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.2rem;
+  min-height: 56px;
+  position: relative;
+}
+
+.footer__logo-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.footer__logo-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.footer__logo-img {
+  max-height: 48px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 1.1rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transition: transform 0.18s cubic-bezier(0.4, 1.4, 0.6, 1), box-shadow 0.18s;
+}
+.footer__logo-img:hover {
+  transform: scale(1.04) rotate(-1deg);
+  box-shadow: 0 6px 24px rgba(76, 104, 68, 0.1);
+}
+
+.footer__desc {
+  color: var(--text-light);
+  font-size: 1.08rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+
+.footer__socials {
+  display: flex;
+  gap: 0.7rem;
+}
+.footer__socials a {
+  background: var(--secondary-bg);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.25rem;
+  transition: background 0.2s, color 0.2s;
+}
+.footer__socials a:hover {
+  background: var(--accent);
+  color: var(--text-dark);
+}
+
+.footer__links-title {
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  font-size: 1.12rem;
+  letter-spacing: 0.01em;
+}
+
+.footer__contact-item {
+  color: var(--text-light);
+  font-size: 1.05rem;
+  margin-bottom: 0.2rem;
+  text-align: left;
+}
+
+.footer__payments-title {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 1.08rem;
+  margin: 0.7rem 0 0.2rem 0;
+  letter-spacing: 0.01em;
+}
+.footer__payments-icons {
+  display: flex;
+  gap: 0.7rem;
+  font-size: 1.7rem;
+  color: var(--primary);
+  align-items: center;
+}
+
+.footer__bottom {
+  margin-top: 2.2rem;
+  text-align: center;
+  color: var(--text-light);
+  font-size: 1.01rem;
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 900px) {
+  .footer__main--grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+  .footer__brand {
+    grid-column: span 2;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer__main--grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .footer__brand {
+    grid-column: span 1;
+    margin-bottom: 1rem;
+  }
+  .footer {
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 1rem 0.3rem 0.8rem 0.3rem;
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+  .footer__main--grid {
+    gap: 0.8rem;
+  }
+  .footer__desc {
+    font-size: 1rem;
+  }
+  .footer__links-title {
+    font-size: 1.05rem;
+  }
+  .footer__contact-item {
+    font-size: 1rem;
+  }
+  .footer__socials a {
+    width: 34px;
+    height: 34px;
+    font-size: 1.1rem;
+  }
+  .footer__payments-icons {
+    font-size: 1.5rem;
+  }
+}

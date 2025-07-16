@@ -5,6 +5,26 @@
   text-align: center;
 }
 
+/* Responsive layout adjustments */
+@media (max-width: 1024px) {
+  #root {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #root {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #root {
+    padding: 0.5rem;
+  }
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

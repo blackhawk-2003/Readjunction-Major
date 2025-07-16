@@ -1,35 +1,62 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import "./styles/global.css";
+import { Routes, Route, useLocation } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import FeaturedProducts from "./components/FeaturedProducts";
+import NewsletterSignup from "./components/NewsletterSignup";
+import Footer from "./components/Footer";
+import Products from "./pages/Products";
+import ProductDetails from "./pages/ProductDetails";
+import Category from "./pages/Category";
+import FAQ from "./pages/FAQ";
+import Returns from "./pages/Returns";
+import Shipping from "./pages/Shipping";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminProducts from "./pages/AdminProducts";
+import AdminProductDetails from "./pages/AdminProductDetails";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+function Home() {
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Hero />
+      <FeaturedProducts />
+      <NewsletterSignup />
     </>
-  )
+  );
 }
 
-export default App
+function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+  return (
+    <>
+      {!isAdminRoute && <Navbar />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/category/:categoryName" element={<Category />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/returns" element={<Returns />} />
+        <Route path="/shipping" element={<Shipping />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard/products" element={<AdminProducts />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/products/:id" element={<AdminProductDetails />} />
+      </Routes>
+      <Footer />
+    </>
+  );
+}
+
+export default App;

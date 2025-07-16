@@ -1,0 +1,78 @@
+.admin-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0.5rem auto 1.5rem auto;
+  background: var(--primary-bg);
+  border-radius: 18px;
+  padding: 1.2rem 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.18s;
+}
+
+.admin-navbar--scrolled {
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+.admin-navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+}
+
+.admin-navbar__logo-img {
+  max-height: 56px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 1.2rem;
+}
+
+.admin-navbar__logo-text {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.01em;
+}
+
+.admin-navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.admin-navbar__btn {
+  background: transparent;
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 1.08rem;
+  padding: 0.7em 1.6em;
+  border-radius: 2.2rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+
+.admin-navbar__btn:hover,
+.admin-navbar__btn--active {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+@media (max-width: 900px) {
+  .admin-navbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem 0.5rem;
+    gap: 1rem;
+  }
+  .admin-navbar__links {
+    justify-content: center;
+    gap: 0.7rem;
+  }
+}

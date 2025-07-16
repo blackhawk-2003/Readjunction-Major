@@ -1,0 +1,58 @@
+/* Global CSS Variables */
+:root {
+  --primary-bg: #f6f5ef;
+  --secondary-bg: #e9f0e1;
+  --accent: #e6eecf;
+  --primary: #4b6844;
+  --secondary: #b2c8b1;
+  --text-dark: #2d2d2d;
+  --text-light: #6b6b6b;
+  --button-bg: #f6e7a6;
+  --button-text: #2d2d2d;
+  --border-radius: 18px;
+  --font-main: "Inter", Arial, sans-serif;
+}
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--primary-bg);
+  color: var(--text-dark);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  border-radius: var(--border-radius);
+  background: var(--button-bg);
+  color: var(--button-text);
+  padding: 0.7em 2em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: var(--secondary);
+}
+
+input,
+select {
+  font-family: inherit;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--secondary);
+  padding: 0.6em 1em;
+  outline: none;
+}
