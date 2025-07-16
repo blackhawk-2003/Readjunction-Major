@@ -1,7 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FiUser, FiHeart, FiShoppingCart, FiSearch } from "react-icons/fi";
+import {
+  FiUser,
+  FiHeart,
+  FiShoppingCart,
+  FiSearch,
+  FiLogOut,
+} from "react-icons/fi";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/useAuth";
 import logoImg from "../assets/logo-transparent.png";
 import "../styles/Navbar.css";
 
@@ -16,8 +23,10 @@ const Navbar = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [sidebarSearchQuery, setSidebarSearchQuery] = useState("");
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const hasFetched = useRef(false);
   const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
 
   // Prevent body scroll when sidebar is open
   useEffect(() => {
@@ -99,6 +108,20 @@ const Navbar = () => {
     }
   };
 
+  const handleUserClick = () => {
+    if (isAuthenticated) {
+      setShowUserMenu(!showUserMenu);
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setShowUserMenu(false);
+    navigate("/");
+  };
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -174,9 +197,7 @@ const Navbar = () => {
                 placeholder="What are you looking for?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) =>
-                  handleKeyPress(e, searchQuery, setSearchQuery)
-                }
+                onKeyPress={(e) => handleKeyPress(e, searchQuery)}
               />
               <button
                 type="submit"
@@ -187,9 +208,96 @@ const Navbar = () => {
                 <FiSearch {...iconProps} />
               </button>
             </form>
-            <button className="navbar__icon-btn" aria-label="User">
-              <FiUser {...iconProps} />
-            </button>
+
+            {/* User Menu */}
+            <div style={{ position: "relative" }}>
+              <button
+                className="navbar__icon-btn"
+                aria-label="User"
+                onClick={handleUserClick}
+              >
+                <FiUser {...iconProps} />
+              </button>
+
+              {showUserMenu && isAuthenticated && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    right: 0,
+                    background: "white",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    minWidth: "200px",
+                    zIndex: 1000,
+                    marginTop: "8px",
+                  }}
+                >
+                  <div
+                    style={{
+                      padding: "12px 16px",
+                      borderBottom: "1px solid #e2e8f0",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#2d3748",
+                    }}
+                  >
+                    {user?.profile?.firstName} {user?.profile?.lastName}
+                  </div>
+                  <div style={{ padding: "8px 0" }}>
+                    <Link
+                      to="/profile"
+                      style={{
+                        display: "block",
+                        padding: "8px 16px",
+                        color: "#4a5568",
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        transition: "background-color 0.2s",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.target.style.backgroundColor = "#f7fafc")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.target.style.backgroundColor = "transparent")
+                      }
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        padding: "8px 16px",
+                        color: "#e53e3e",
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        background: "none",
+                        border: "none",
+                        textAlign: "left",
+                        cursor: "pointer",
+                        transition: "background-color 0.2s",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.target.style.backgroundColor = "#fed7d7")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.target.style.backgroundColor = "transparent")
+                      }
+                    >
+                      <FiLogOut
+                        style={{ marginRight: "8px", verticalAlign: "middle" }}
+                      />
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <button className="navbar__icon-btn" aria-label="Wishlist">
               <FiHeart {...iconProps} />
             </button>
@@ -228,6 +336,32 @@ const Navbar = () => {
           </div>
 
           <div className="navbar__sidebar-body">
+            {/* User Info in Sidebar */}
+            {isAuthenticated && (
+              <div className="navbar__sidebar-section">
+                <h3 className="navbar__sidebar-title">
+                  Welcome, {user?.profile?.firstName}!
+                </h3>
+                <div className="navbar__sidebar-nav">
+                  <Link
+                    to="/profile"
+                    className="navbar__sidebar-nav-item"
+                    onClick={closeSidebar}
+                  >
+                    <FiUser size={20} />
+                    <span>Profile</span>
+                  </Link>
+                  <button
+                    className="navbar__sidebar-nav-item"
+                    onClick={handleLogout}
+                  >
+                    <FiLogOut size={20} />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Search in Sidebar */}
             <div className="navbar__sidebar-search">
               <form
@@ -240,9 +374,7 @@ const Navbar = () => {
                   placeholder="What are you looking for?"
                   value={sidebarSearchQuery}
                   onChange={(e) => setSidebarSearchQuery(e.target.value)}
-                  onKeyPress={(e) =>
-                    handleKeyPress(e, sidebarSearchQuery, setSidebarSearchQuery)
-                  }
+                  onKeyPress={(e) => handleKeyPress(e, sidebarSearchQuery)}
                 />
                 <button
                   type="submit"
@@ -290,10 +422,44 @@ const Navbar = () => {
             <div className="navbar__sidebar-section">
               <h3 className="navbar__sidebar-title">Account</h3>
               <div className="navbar__sidebar-nav">
-                <button className="navbar__sidebar-nav-item">
-                  <FiUser size={20} />
-                  <span>Profile</span>
-                </button>
+                {!isAuthenticated ? (
+                  <>
+                    <Link
+                      to="/login"
+                      className="navbar__sidebar-nav-item"
+                      onClick={closeSidebar}
+                    >
+                      <FiUser size={20} />
+                      <span>Login</span>
+                    </Link>
+                    <Link
+                      to="/register"
+                      className="navbar__sidebar-nav-item"
+                      onClick={closeSidebar}
+                    >
+                      <FiUser size={20} />
+                      <span>Register</span>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/profile"
+                      className="navbar__sidebar-nav-item"
+                      onClick={closeSidebar}
+                    >
+                      <FiUser size={20} />
+                      <span>Profile</span>
+                    </Link>
+                    <button
+                      className="navbar__sidebar-nav-item"
+                      onClick={handleLogout}
+                    >
+                      <FiLogOut size={20} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                )}
                 <button className="navbar__sidebar-nav-item">
                   <FiHeart size={20} />
                   <span>Wishlist</span>

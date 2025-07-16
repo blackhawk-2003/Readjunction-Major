@@ -1,6 +1,10 @@
 import "./App.css";
 import "./styles/global.css";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { AuthProvider } from "./auth/AuthContext";
+import { useAuth } from "./auth/useAuth";
+import ProtectedRoute from "./auth/ProtectedRoute";
+import LogoutSuccess from "./auth/LogoutSuccess";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import FeaturedProducts from "./components/FeaturedProducts";
@@ -20,6 +24,10 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
 import AdminProductDetails from "./pages/AdminProductDetails";
+import SellerDashboard from "./pages/SellerDashboard";
+import Login from "./auth/Login";
+import Register from "./auth/Register";
+import Profile from "./auth/Profile";
 
 function Home() {
   return (
@@ -31,13 +39,25 @@ function Home() {
   );
 }
 
-function App() {
+function AppContent() {
+  const { logoutSuccess, setLogoutSuccess } = useAuth();
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
+  const isSellerRoute = location.pathname.startsWith("/seller");
+  const isAuthRoute =
+    location.pathname.startsWith("/login") ||
+    location.pathname.startsWith("/register") ||
+    location.pathname.startsWith("/profile");
+
   return (
     <>
-      {!isAdminRoute && <Navbar />}
+      {logoutSuccess && (
+        <LogoutSuccess onClose={() => setLogoutSuccess(false)} />
+      )}
+
+      {!isAdminRoute && !isSellerRoute && !isAuthRoute && <Navbar />}
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/:id" element={<ProductDetails />} />
@@ -49,13 +69,66 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
+
+        {/* Authentication Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard/products" element={<AdminProducts />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/products/:id" element={<AdminProductDetails />} />
+        <Route
+          path="/admin/dashboard/products"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminProducts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/products/:id"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminProductDetails />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Seller Routes */}
+        <Route
+          path="/seller/dashboard"
+          element={
+            <ProtectedRoute requiredRole="seller">
+              <SellerDashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-      <Footer />
+      {!isAdminRoute && !isSellerRoute && !isAuthRoute && <Footer />}
     </>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
