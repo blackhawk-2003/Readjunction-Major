@@ -94,17 +94,31 @@ const getProducts = asyncHandler(async (req, res) => {
   // Build filter object
   const filter = {};
 
-  // Only show approved active products for public access
-  if (!req.user?.role || req.user.role === "buyer") {
+  // For public routes, only show approved active products
+  // If user is authenticated and has seller/admin role, they can see more products
+  if (!req.user) {
+    // Unauthenticated users - only approved active products
+    filter.status = "active";
+    filter.approvalStatus = "approved";
+  } else if (req.user.role === "buyer") {
+    // Authenticated buyers - only approved active products
     filter.status = "active";
     filter.approvalStatus = "approved";
   }
+  // Sellers and admins can see all products (including their own pending ones)
 
   if (category) filter.category = category;
   if (subcategory) filter.subcategory = subcategory;
   if (brand) filter.brand = brand;
   if (featured === "true") filter.featured = true;
-  if (status && req.user?.role !== "buyer") filter.status = status;
+  // Only allow status filtering for sellers and admins
+  if (
+    status &&
+    req.user &&
+    (req.user.role === "seller" || req.user.role === "admin")
+  ) {
+    filter.status = status;
+  }
 
   // Price range filter
   if (minPrice || maxPrice) {
@@ -193,17 +207,20 @@ const getProductById = asyncHandler(async (req, res) => {
 
   // Check if user can view this product
   if (product.status !== "active" || product.approvalStatus !== "approved") {
-    if (
-      !req.user ||
-      (req.user.role !== "seller" && req.user.role !== "admin")
-    ) {
+    // Unauthenticated users can only see approved active products
+    if (!req.user) {
+      throw new ApiError(404, "Product not found");
+    }
+
+    // Only sellers and admins can see non-approved or inactive products
+    if (req.user.role !== "seller" && req.user.role !== "admin") {
       throw new ApiError(404, "Product not found");
     }
 
     // Sellers can only view their own products
     if (req.user.role === "seller") {
       const seller = await Seller.findOne({ userId: req.user._id });
-      if (product.sellerId.toString() !== seller._id.toString()) {
+      if (!seller || product.sellerId.toString() !== seller._id.toString()) {
         throw new ApiError(404, "Product not found");
       }
     }
@@ -877,6 +894,82 @@ const setProductFeatured = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, product, "Product featured status updated"));
 });
 
+/**
+ * @desc    Get all products for admin (unfiltered)
+ * @route   GET /api/products/admin/unfiltered
+ * @access  Private (Admin only)
+ */
+const getAllProductsUnfilteredForAdmin = asyncHandler(async (req, res) => {
+  const {
+    page = 1,
+    limit = 10,
+    approvalStatus,
+    status,
+    sellerId,
+    category,
+    search,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+  } = req.query;
+
+  // Build filter (authorization middleware ensures user is admin)
+  const filter = {};
+  // Only add approvalStatus or status if explicitly provided
+  if (approvalStatus) filter.approvalStatus = approvalStatus;
+  if (status) filter.status = status;
+  if (sellerId) filter.sellerId = sellerId;
+  if (category) filter.category = category;
+  if (search) {
+    filter.$or = [
+      { title: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+      { brand: { $regex: search, $options: "i" } },
+      { sku: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  // Pagination
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+
+  // Sorting
+  const sort = {};
+  sort[sortBy] = sortOrder === "desc" ? -1 : 1;
+
+  // Execute query
+  const products = await Product.find(filter)
+    .populate("sellerId", "businessName businessDescription")
+    .sort(sort)
+    .skip(skip)
+    .limit(parseInt(limit))
+    .lean();
+
+  // Get total count
+  const total = await Product.countDocuments(filter);
+
+  // Calculate pagination info
+  const totalPages = Math.ceil(total / parseInt(limit));
+  const hasNextPage = page < totalPages;
+  const hasPrevPage = page > 1;
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        products,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages,
+          total,
+          hasNextPage,
+          hasPrevPage,
+          limit: parseInt(limit),
+        },
+      },
+      "All products (unfiltered) retrieved successfully"
+    )
+  );
+});
+
 module.exports = {
   createProduct,
   getProducts,
@@ -898,4 +991,5 @@ module.exports = {
   getAllProductsForAdmin,
   updateProductApprovalStatus,
   setProductFeatured,
+  getAllProductsUnfilteredForAdmin, // <-- export the new controller
 };

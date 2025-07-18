@@ -21,6 +21,7 @@ const {
   getAdminDashboard,
   getAllProductsForAdmin,
   updateProductApprovalStatus,
+  getAllProductsUnfilteredForAdmin,
 } = require("../controllers/product.controller");
 
 const { protect, authorize } = require("../middleware/auth");
@@ -147,6 +148,18 @@ router.get("/admin/dashboard", protect, authorize("admin"), getAdminDashboard);
  * @access  Private (Admin only)
  */
 router.get("/admin/all", protect, authorize("admin"), getAllProductsForAdmin);
+
+/**
+ * @route   GET /api/products/admin/unfiltered
+ * @desc    Get all products for admin (unfiltered)
+ * @access  Private (Admin only)
+ */
+router.get(
+  "/admin/unfiltered",
+  protect,
+  authorize("admin"),
+  getAllProductsUnfilteredForAdmin
+);
 
 /**
  * @route   PATCH /api/products/admin/:id/approve

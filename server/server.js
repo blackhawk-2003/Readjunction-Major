@@ -12,6 +12,11 @@ const app = express();
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const productRoutes = require("./routes/product.routes");
+const orderRoutes = require("./routes/order.routes");
+const cartRoutes = require("./routes/cart.routes");
+const wishlistRoutes = require("./routes/wishlist.routes");
+const sellerRoutes = require("./routes/seller.routes");
+const paymentRoutes = require("./routes/payment.routes");
 
 // Import middleware
 const errorHandler = require("./middleware/errorHandler");
@@ -21,7 +26,7 @@ const notFound = require("./middleware/notFound");
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );
@@ -34,6 +39,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/orders", orderRoutes);
+app.use("/api/v1/cart", cartRoutes);
+app.use("/api/v1/wishlists", wishlistRoutes);
+app.use("/api/v1/seller", sellerRoutes);
+app.use("/api/v1/payments", paymentRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {

@@ -27,7 +27,9 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.3",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "razorpay": "^2.9.6",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

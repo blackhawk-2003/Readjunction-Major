@@ -1,6 +1,7 @@
-const validate = (schema) => {
+const validate = (schema, source = "body") => {
   return (req, res, next) => {
-    const { error } = schema.validate(req.body, {
+    const dataToValidate = source === "query" ? req.query : req.body;
+    const { error } = schema.validate(dataToValidate, {
       abortEarly: false,
       stripUnknown: true,
     });
