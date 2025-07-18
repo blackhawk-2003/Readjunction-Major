@@ -9,5 +9,6 @@ export const AuthContext = createContext({
   logout: async () => {},
   logoutSuccess: false,
   setLogoutSuccess: () => {},
+  updateUser: () => {},
   isAuthenticated: false,
 });

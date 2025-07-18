@@ -10,6 +10,7 @@ import {
 } from "react-icons/fi";
 import { Link, useSearchParams } from "react-router-dom";
 import "../styles/Products.css";
+import ErrorBanner from "../components/ErrorBanner";
 
 const ProductFilters = () => {
   return (
@@ -120,6 +121,7 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchParams] = useSearchParams();
+  const [apiError, setApiError] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -139,7 +141,10 @@ const Products = () => {
     }`;
 
     fetch(apiUrl)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch products");
+        return res.json();
+      })
       .then((data) => {
         if (data.success) {
           setProducts(data.data.products);
@@ -149,8 +154,8 @@ const Products = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching products:", err);
-        setError("Failed to load products.");
+        setApiError(err.message || "Failed to fetch products");
+        setError(err.message || "Failed to fetch products");
         setLoading(false);
       });
   }, [searchParams]);
@@ -170,6 +175,7 @@ const Products = () => {
             ? `${categoryFilter} Books`
             : "All Books"}
         </h1>
+        <ErrorBanner message={apiError} onClose={() => setApiError("")} />
         {loading ? (
           <div className="products__loading">
             <div className="products__spinner"></div>

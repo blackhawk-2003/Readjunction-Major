@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import "../styles/ProductDetails.css";
+import { useAuth } from "../auth/useAuth";
+import { useCartStore } from "../store/cartStore";
+import { useLocation } from "react-router-dom";
+import ErrorBanner from "../components/ErrorBanner";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,6 +18,10 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [similar, setSimilar] = useState([]);
   const [similarLoading, setSimilarLoading] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const { addToCart, loading: cartLoading, error: cartError } = useCartStore();
+  const [cartMsg, setCartMsg] = useState("");
+  const [apiError, setApiError] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -37,7 +46,7 @@ const ProductDetails = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching product:", err);
+        setApiError(err.message || "Product not found.");
         setError(err.message || "Product not found.");
         setLoading(false);
       });
@@ -155,10 +164,37 @@ const ProductDetails = () => {
                     </option>
                   ))}
                 </select>
-                <button className="product-details__cta" disabled={stock === 0}>
-                  Add to Cart
+                <button
+                  className="product-details__cta"
+                  disabled={stock === 0 || cartLoading}
+                  onClick={async () => {
+                    if (!isAuthenticated) {
+                      navigate("/login", { state: { from: location } });
+                      return;
+                    }
+                    setCartMsg("");
+                    setApiError("");
+                    try {
+                      await addToCart({ productId: product._id, quantity });
+                      if (cartError) {
+                        setApiError(cartError);
+                      } else {
+                        setCartMsg("Added to cart!");
+                        setTimeout(() => setCartMsg(""), 2000);
+                      }
+                    } catch (err) {
+                      setApiError(
+                        cartError || err?.message || "Could not add to cart"
+                      );
+                    }
+                  }}
+                >
+                  {cartLoading ? "Adding..." : "Add to Cart"}
                 </button>
               </div>
+              {cartMsg && (
+                <div className="product-details__cart-msg">{cartMsg}</div>
+              )}
             </div>
           </div>
           <div className="product-details__similar-section">
@@ -209,6 +245,7 @@ const ProductDetails = () => {
               </div>
             )}
           </div>
+          <ErrorBanner message={apiError} onClose={() => setApiError("")} />
         </>
       )}
     </div>

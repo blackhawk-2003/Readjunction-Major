@@ -6,16 +6,15 @@ import {
   FiDollarSign,
   FiTrendingUp,
   FiUsers,
-  FiLogOut,
-  FiHome,
   FiCalendar,
   FiBarChart,
 } from "react-icons/fi";
-import logoImg from "../assets/logo-transparent.png";
 import "./SellerDashboard.css";
+import SellerNavbar from "../components/SellerNavbar";
 
 const SellerDashboard = () => {
-  const { user, logout } = useAuth();
+  // eslint-disable-line no-unused-vars
+
   const navigate = useNavigate();
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -50,15 +49,6 @@ const SellerDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/");
-  };
-
-  const handleGoHome = () => {
-    navigate("/");
   };
 
   const formatDate = (dateString) => {
@@ -117,39 +107,9 @@ const SellerDashboard = () => {
 
   return (
     <div className="seller-dashboard">
-      {/* Header */}
-      <header className="seller-dashboard__header">
-        <div className="seller-dashboard__header-content">
-          <div className="seller-dashboard__logo">
-            <img src={logoImg} alt="ReadJunction Logo" />
-            <span>Seller Dashboard</span>
-          </div>
-          <div className="seller-dashboard__user-info">
-            <span>Welcome, {user?.profile?.firstName || user?.email}</span>
-            <div className="seller-dashboard__actions">
-              <button
-                onClick={handleGoHome}
-                className="seller-dashboard__btn seller-dashboard__btn--secondary"
-              >
-                <FiHome />
-                Go to Store
-              </button>
-              <button
-                onClick={handleLogout}
-                className="seller-dashboard__btn seller-dashboard__btn--danger"
-              >
-                <FiLogOut />
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
+      <SellerNavbar />
       <main className="seller-dashboard__main">
         <div className="seller-dashboard__container">
-          {/* Stats Cards */}
           <div className="seller-dashboard__stats">
             <div className="seller-dashboard__stat-card">
               <div className="seller-dashboard__stat-icon">

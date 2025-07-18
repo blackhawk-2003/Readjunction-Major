@@ -58,10 +58,11 @@
 
 /* Header */
 .seller-dashboard__header {
-  background: var(--primary-bg);
-  border-bottom: 1px solid var(--secondary);
-  padding: 1rem 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
 .seller-dashboard__header-content {

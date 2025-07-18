@@ -195,7 +195,7 @@ const Register = () => {
             navigate("/seller/dashboard");
           } else {
             // Default for buyers
-            navigate("/");
+            navigate("/login");
           }
         }, 2000);
       } else {

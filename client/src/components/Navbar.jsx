@@ -9,8 +9,10 @@ import {
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
+import { useCartStore } from "../store/cartStore";
 import logoImg from "../assets/logo-transparent.png";
 import "../styles/Navbar.css";
+import { usePrevious } from "../utils/usePrevious";
 
 const iconProps = { size: 28, color: "#222" };
 const CATEGORY_API = "http://localhost:5000/api/v1/products/categories";
@@ -27,6 +29,25 @@ const Navbar = () => {
   const hasFetched = useRef(false);
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
+  const { getTotalCount, fetchCart } = useCartStore();
+  const [animateCart, setAnimateCart] = useState(false);
+  const cartCount = getTotalCount();
+  const prevCartCount = usePrevious(cartCount);
+  useEffect(() => {
+    if (isAuthenticated) fetchCart();
+  }, [isAuthenticated, fetchCart]);
+
+  useEffect(() => {
+    if (
+      cartCount > 0 &&
+      prevCartCount !== undefined &&
+      cartCount > prevCartCount
+    ) {
+      setAnimateCart(true);
+      const timeout = setTimeout(() => setAnimateCart(false), 350);
+      return () => clearTimeout(timeout);
+    }
+  }, [cartCount, prevCartCount]);
 
   // Prevent body scroll when sidebar is open
   useEffect(() => {
@@ -301,8 +322,21 @@ const Navbar = () => {
             <button className="navbar__icon-btn" aria-label="Wishlist">
               <FiHeart {...iconProps} />
             </button>
-            <button className="navbar__icon-btn" aria-label="Cart">
+            <button
+              className={`navbar__icon-btn navbar__icon-btn--cart`}
+              aria-label="Cart"
+              onClick={() => navigate("/cart")}
+            >
               <FiShoppingCart {...iconProps} />
+              {isAuthenticated && cartCount > 0 && (
+                <span
+                  className={`navbar__cart-badge${
+                    animateCart ? " navbar__cart-badge--pop" : ""
+                  }`}
+                >
+                  {cartCount}
+                </span>
+              )}
             </button>
           </div>
         </nav>

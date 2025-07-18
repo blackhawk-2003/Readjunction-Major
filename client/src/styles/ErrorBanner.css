@@ -1,0 +1,28 @@
+.error-banner {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: #f87171;
+  color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  z-index: 9999;
+  min-width: 260px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.error-banner--success {
+  background: #22c55e;
+  color: #fff;
+}
+.error-banner-progress {
+  height: 4px;
+  background: #fff;
+  border-radius: 2px;
+  margin-top: 0.5rem;
+  transition: width 0.1s linear;
+  width: 100%;
+}

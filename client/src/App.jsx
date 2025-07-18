@@ -27,7 +27,10 @@ import AdminProductDetails from "./pages/AdminProductDetails";
 import SellerDashboard from "./pages/SellerDashboard";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
-import Profile from "./auth/Profile";
+import Profile from "./pages/Profile";
+import SellerProducts from "./pages/SellerProducts";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 
 function Home() {
   return (
@@ -81,6 +84,22 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
@@ -115,6 +134,14 @@ function AppContent() {
           element={
             <ProtectedRoute requiredRole="seller">
               <SellerDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/seller/products"
+          element={
+            <ProtectedRoute requiredRole="seller">
+              <SellerProducts />
             </ProtectedRoute>
           }
         />
