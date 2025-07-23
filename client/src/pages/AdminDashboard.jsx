@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/AdminDashboard.css";
+import AdminOrders from "./AdminOrders";
+import AdminPayments from "./AdminPayments";
 
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
@@ -9,6 +11,7 @@ const AdminDashboard = () => {
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsError, setStatsError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -60,6 +63,14 @@ const AdminDashboard = () => {
         setStatsLoading(false);
       });
   }, []);
+
+  // Routing for admin dashboard subpages
+  if (location.pathname === "/admin/dashboard/orders") {
+    return <AdminOrders />;
+  }
+  if (location.pathname === "/admin/dashboard/payments") {
+    return <AdminPayments />;
+  }
 
   return (
     <div>

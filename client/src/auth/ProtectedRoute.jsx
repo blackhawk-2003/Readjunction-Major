@@ -73,6 +73,35 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
     );
   }
 
+  // Add admin route protection for admin dashboard and subpages
+  const adminPaths = [
+    "/admin/dashboard",
+    "/admin/dashboard/orders",
+    "/admin/dashboard/payments",
+  ];
+  const currentPath = location.pathname;
+
+  if (adminPaths.includes(currentPath) && user?.role !== "admin") {
+    return (
+      <div className="protected-route-container">
+        {showWarning && (
+          <div className="protected-route-warning">
+            <div className="protected-route-warning-content">
+              <FiAlertTriangle className="protected-route-warning-icon" />
+              <span>Access Denied</span>
+              <p>You don't have permission to access this page</p>
+            </div>
+            <div
+              className="protected-route-warning-progress"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        )}
+        <Navigate to="/" replace />
+      </div>
+    );
+  }
+
   // If role is required and user doesn't have it
   if (requiredRole && user?.role !== requiredRole) {
     return (

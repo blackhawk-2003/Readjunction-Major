@@ -235,7 +235,7 @@ function RazorpayPaymentStep({
 const Checkout = () => {
   // const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { cart, fetchCart } = useCartStore();
+  const { cart, fetchCart, clearCartState } = useCartStore();
 
   // UI state
   const [step, setStep] = useState(1); // 1: Shipping, 2: Review, 3: Payment, 4: Confirmation
@@ -287,7 +287,13 @@ const Checkout = () => {
     setShippingTouched({ ...shippingTouched, [e.target.name]: true });
   };
 
-  const handleSuccess = () => setStep(4);
+  const handleSuccess = () => {
+    // Clear cart state immediately for better UX
+    clearCartState();
+    // Refresh cart to reflect the cleared state from backend
+    fetchCart();
+    setStep(4);
+  };
 
   // Add this function to check and show errors on submit
   const handleShippingNext = () => {
@@ -674,8 +680,9 @@ const Checkout = () => {
       <div className="checkout-confirmation-icon">🎉</div>
       <h2 className="checkout-step-title">Order Placed Successfully!</h2>
       <div className="checkout-confirmation-msg">
-        Thank you for your purchase. Your order has been placed and a
-        confirmation email will be sent to you.
+        Thank you for your purchase! Your order has been placed and a
+        confirmation email will be sent to you. Your cart has been cleared and
+        is ready for your next shopping session.
       </div>
       <button
         className="checkout-next-btn"

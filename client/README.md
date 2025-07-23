@@ -90,6 +90,13 @@ A modern e-commerce platform for books and educational materials, built with Rea
   - Error handling and loading states
   - Quick actions for managing products, orders, analytics, and profile
 
+### 🛠️ Recent Improvements
+
+- **Admin Buyers & Sellers Pages**: View all buyers and sellers from the admin dashboard with beautiful, responsive tables.
+- **Order Status Notes**: Add a note when changing order status as admin; notes are tracked in the order timeline.
+- **Order Item Cards**: Order details page now features modern, visually appealing cards for each item, with improved alignment and responsive layout.
+- **UI/UX Enhancements**: Reduced spacing, improved alignment, and consistent admin navigation across all dashboard pages.
+
 ## 🎯 Features to Implement Next
 
 ### 🔐 Authentication & User Management
@@ -234,6 +241,11 @@ Create a `.env` file in the client directory:
 ```env
 VITE_API_BASE_URL=http://localhost:5000/api/v1
 ```
+
+### Usage Notes
+
+- **Admin Features**: Log in as an admin to access buyers, sellers, orders, and payments management. You can add notes when changing order status.
+- **Order Details**: Order items are now displayed in a modern card layout for better readability and aesthetics.
 
 ## 🏗️ Project Structure
 

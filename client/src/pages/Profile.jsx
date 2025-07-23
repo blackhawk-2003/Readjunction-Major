@@ -22,9 +22,11 @@ import {
   FiShoppingBag,
   FiCreditCard,
   FiMoreHorizontal,
+  FiCalendar,
 } from "react-icons/fi";
 import { useAuth } from "../auth/useAuth";
 import UserService from "../services/userService";
+import { getBuyerOrders } from "../services/orderService";
 import Navbar from "../components/Navbar";
 import logoImg from "../assets/logo-transparent.png";
 import "./Profile.css";
@@ -41,6 +43,9 @@ const Profile = () => {
   const [editingAddress, setEditingAddress] = useState(null);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [showProfileForm, setShowProfileForm] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [ordersError, setOrdersError] = useState("");
 
   // Form states
   const [profileForm, setProfileForm] = useState({
@@ -98,6 +103,8 @@ const Profile = () => {
   // Load addresses on component mount
   useEffect(() => {
     loadAddresses();
+    loadOrders();
+    // eslint-disable-next-line
   }, []);
 
   // Handle logout
@@ -255,6 +262,21 @@ const Profile = () => {
     }
   };
 
+  // Fetch orders for buyer
+  const loadOrders = async () => {
+    setOrdersLoading(true);
+    setOrdersError("");
+    try {
+      const token = localStorage.getItem("token");
+      const data = await getBuyerOrders(token, { page: 1, limit: 5 });
+      setOrders(data.orders || []);
+    } catch (err) {
+      setOrdersError(err.message || "Failed to load orders");
+    } finally {
+      setOrdersLoading(false);
+    }
+  };
+
   // Edit address
   const editAddress = (address) => {
     setEditingAddress(address);
@@ -304,6 +326,32 @@ const Profile = () => {
         return "Shipping";
       default:
         return "Other";
+    }
+  };
+
+  // Helper for status badge color
+  const getOrderStatusClass = (status) => {
+    switch (status) {
+      case "pending":
+        return "order-status-pending";
+      case "confirmed":
+        return "order-status-confirmed";
+      case "processing":
+        return "order-status-processing";
+      case "shipped":
+        return "order-status-shipped";
+      case "out_for_delivery":
+        return "order-status-out-for-delivery";
+      case "delivered":
+        return "order-status-delivered";
+      case "cancelled":
+        return "order-status-cancelled";
+      case "refunded":
+        return "order-status-refunded";
+      case "returned":
+        return "order-status-returned";
+      default:
+        return "order-status-other";
     }
   };
 
@@ -600,6 +648,120 @@ const Profile = () => {
                                   Set as Default
                                 </button>
                               )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    {/* My Orders Section */}
+                    <div className="profile-section profile-orders-section">
+                      <div className="section-header-with-action">
+                        <h3>My Orders</h3>
+                        <button
+                          className="btn-secondary"
+                          onClick={loadOrders}
+                          disabled={ordersLoading}
+                        >
+                          Refresh
+                        </button>
+                      </div>
+                      {ordersLoading ? (
+                        <div className="orders-loading">
+                          Loading your orders...
+                        </div>
+                      ) : ordersError ? (
+                        <div className="orders-error">{ordersError}</div>
+                      ) : orders.length === 0 ? (
+                        <div className="empty-state">
+                          <FiShoppingBag
+                            style={{ fontSize: 48, color: "#b2c8b1" }}
+                          />
+                          <p>You have not placed any orders yet.</p>
+                        </div>
+                      ) : (
+                        <div className="orders-list">
+                          {orders.map((order) => (
+                            <div
+                              className="order-card"
+                              key={order._id}
+                              onClick={() => navigate(`/orders/${order._id}`)}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <div className="order-card-header">
+                                <div className="order-number">
+                                  Order #{order.orderNumber}
+                                </div>
+                                <div
+                                  className={`order-status-badge ${getOrderStatusClass(
+                                    order.status
+                                  )}`}
+                                >
+                                  {order.status.replace(/_/g, " ")}
+                                </div>
+                              </div>
+                              <div className="order-card-details">
+                                <div className="order-date">
+                                  <FiCalendar style={{ marginRight: 6 }} />
+                                  {new Date(
+                                    order.createdAt
+                                  ).toLocaleDateString()}
+                                </div>
+                                <div className="order-total">
+                                  <FiCreditCard style={{ marginRight: 6 }} />
+                                  <span>Total:</span> ₹{order.totals.total}
+                                </div>
+                              </div>
+                              <div className="order-items-list">
+                                {order.items.slice(0, 3).map((item) => (
+                                  <div
+                                    className="order-item"
+                                    key={item.productId._id || item.productId}
+                                  >
+                                    <img
+                                      src={
+                                        item.productImage ||
+                                        (item.productId.images &&
+                                          item.productId.images[0]) ||
+                                        "/placeholder-image.jpg"
+                                      }
+                                      alt={
+                                        item.productName ||
+                                        (item.productId &&
+                                          item.productId.title) ||
+                                        "Product"
+                                      }
+                                      className="order-item-img"
+                                    />
+                                    <div className="order-item-info">
+                                      <div className="order-item-title">
+                                        {item.productName ||
+                                          (item.productId &&
+                                            item.productId.title) ||
+                                          "Product"}
+                                      </div>
+                                      <div className="order-item-qty">
+                                        Qty: {item.quantity}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                                {order.items.length > 3 && (
+                                  <div className="order-more-items">
+                                    +{order.items.length - 3} more item(s)
+                                  </div>
+                                )}
+                              </div>
+                              <div className="order-card-footer">
+                                <button
+                                  className="view-details-btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/orders/${order._id}`);
+                                  }}
+                                >
+                                  View Details →
+                                </button>
+                              </div>
                             </div>
                           ))}
                         </div>

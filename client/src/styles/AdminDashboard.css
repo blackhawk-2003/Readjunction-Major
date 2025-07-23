@@ -128,6 +128,200 @@
   word-break: break-word;
 }
 
+/* Admin Orders & Payments Table Styles */
+.admin-orders-table-wrapper {
+  margin-top: 2rem;
+  background: var(--secondary-bg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  padding: 2rem 1.5rem;
+  overflow-x: auto;
+}
+.admin-orders-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 1rem;
+  background: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+}
+.admin-orders-table th,
+.admin-orders-table td {
+  padding: 1rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--secondary);
+}
+.admin-orders-table th {
+  background: var(--accent);
+  color: var(--primary);
+  font-weight: 600;
+}
+.admin-orders-table tr:last-child td {
+  border-bottom: none;
+}
+.admin-orders-status-select {
+  padding: 0.4em 1em;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--secondary);
+  background: var(--button-bg);
+  color: var(--text-dark);
+  font-size: 1em;
+}
+.admin-orders-details-btn {
+  background: var(--primary);
+  color: #fff;
+  border-radius: var(--border-radius);
+  padding: 0.4em 1.2em;
+  font-size: 1em;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.admin-orders-details-btn:hover {
+  background: var(--secondary);
+  color: var(--primary);
+}
+.admin-orders-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+.admin-orders-pagination button {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border-radius: var(--border-radius);
+  border: none;
+  padding: 0.5em 1.5em;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.admin-orders-pagination button:disabled {
+  background: var(--secondary);
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Modal Styles */
+.admin-orders-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.18);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.admin-orders-modal {
+  background: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.13);
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 340px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: fadeIn 0.2s;
+}
+.admin-orders-modal-section {
+  margin-bottom: 1.2rem;
+  font-size: 1.05em;
+}
+.admin-orders-modal-close {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.5em 1.5em;
+  font-size: 1em;
+  cursor: pointer;
+  margin-top: 1.2rem;
+  transition: background 0.2s;
+}
+.admin-orders-modal-close:hover {
+  background: var(--secondary);
+  color: var(--primary);
+}
+
+/* Admin Buyers & Sellers Section Styles */
+.admin-dashboard__section {
+  background: var(--secondary-bg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 16px rgba(75, 104, 68, 0.07);
+  padding: 0.4rem 2rem 2rem 2rem; /* further reduced top padding */
+  margin: 0.4rem auto 2rem auto; /* further reduced top margin */
+  max-width: 1100px;
+  min-height: 60vh;
+  animation: fadeIn 0.5s;
+}
+.admin-dashboard__section h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 0.7rem; /* further reduced bottom margin */
+  margin-top: 0.1rem; /* further reduced top margin */
+  letter-spacing: 0.01em;
+  text-align: left;
+}
+
+.admin-dashboard__table-container {
+  background: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(76, 104, 68, 0.06);
+  padding: 1.5rem 1rem;
+  overflow-x: auto;
+}
+
+.admin-dashboard__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 1.07rem;
+  background: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 0;
+}
+.admin-dashboard__table th,
+.admin-dashboard__table td {
+  padding: 1rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--secondary);
+}
+.admin-dashboard__table th {
+  background: var(--accent);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1.08rem;
+  letter-spacing: 0.01em;
+  border-top: none;
+}
+.admin-dashboard__table tr:last-child td {
+  border-bottom: none;
+}
+.admin-dashboard__table tbody tr {
+  transition: background 0.18s;
+}
+.admin-dashboard__table tbody tr:hover {
+  background: var(--secondary-bg);
+}
+
+.admin-dashboard__loading {
+  text-align: center;
+  color: var(--primary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 2.5rem 0;
+}
+
 @media (max-width: 900px) {
   .admin-dashboard-stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -145,6 +339,15 @@
     font-size: 0.85rem;
     max-width: 95%;
   }
+  .admin-dashboard__section {
+    padding: 1.2rem 0.5rem;
+    border-radius: 1.2rem;
+  }
+  .admin-dashboard__table th,
+  .admin-dashboard__table td {
+    padding: 0.7rem 0.3rem;
+    font-size: 0.97em;
+  }
 }
 
 @media (max-width: 600px) {
@@ -159,6 +362,18 @@
   .admin-dashboard-title {
     font-size: 1.3rem;
   }
+  .admin-dashboard__section {
+    padding: 0.7rem 0.2rem;
+    border-radius: 1rem;
+  }
+  .admin-dashboard__table-container {
+    padding: 0.5rem 0.1rem;
+  }
+  .admin-dashboard__table th,
+  .admin-dashboard__table td {
+    padding: 0.5rem 0.1rem;
+    font-size: 0.93em;
+  }
 }
 
 @media (max-width: 700px) {
@@ -169,5 +384,14 @@
   .admin-dashboard-stat-card {
     padding: 1.1rem 0.7rem;
     min-height: 80px;
+  }
+  .admin-orders-table th,
+  .admin-orders-table td {
+    padding: 0.6rem 0.3rem;
+    font-size: 0.97em;
+  }
+  .admin-orders-modal {
+    padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+    min-width: 0;
   }
 }

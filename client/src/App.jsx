@@ -31,6 +31,9 @@ import Profile from "./pages/Profile";
 import SellerProducts from "./pages/SellerProducts";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import OrderDetails from "./pages/OrderDetails";
+import AdminBuyers from "./pages/AdminBuyers";
+import AdminSellers from "./pages/AdminSellers";
 
 function Home() {
   return (
@@ -100,6 +103,14 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/orders/:orderId"
+          element={
+            <ProtectedRoute>
+              <OrderDetails />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
@@ -116,6 +127,38 @@ function AppContent() {
           element={
             <ProtectedRoute requiredRole="admin">
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard/orders"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard/payments"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard/buyers"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminBuyers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard/sellers"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminSellers />
             </ProtectedRoute>
           }
         />

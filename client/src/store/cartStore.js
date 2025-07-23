@@ -112,6 +112,16 @@ export const useCartStore = create((set, get) => ({
     }
   },
 
+  // Clear cart state immediately (for after successful payment)
+  clearCartState: () => {
+    set({
+      cart: {
+        items: [],
+        totals: { subtotal: 0, tax: 0, shipping: 0, discount: 0, total: 0 },
+      },
+    });
+  },
+
   // Helper: get total item count
   getTotalCount: () => {
     const cart = get().cart;
