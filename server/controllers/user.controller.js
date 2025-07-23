@@ -210,6 +210,29 @@ const setDefaultAddress = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc    Get all buyers (admin only)
+// @route   GET /api/v1/users/buyers
+const getAllBuyers = asyncHandler(async (req, res) => {
+  // Optionally, add admin check here if not in route middleware
+  const buyers = await User.find({ role: "buyer" }).select(
+    "_id email profile.firstName profile.lastName isVerified isActive createdAt"
+  );
+  console.log("[getAllBuyers] Buyers:", buyers);
+  res.json({ success: true, data: { buyers, count: buyers.length } });
+});
+
+// @desc    Get all sellers (admin only)
+// @route   GET /api/v1/users/sellers
+const Seller = require("../models/seller.model");
+const getAllSellers = asyncHandler(async (req, res) => {
+  // Optionally, add admin check here if not in route middleware
+  const sellers = await Seller.find({}).populate({
+    path: "userId",
+    select: "email profile isVerified isActive createdAt",
+  });
+  res.json({ success: true, data: { sellers, count: sellers.length } });
+});
+
 module.exports = {
   getProfile,
   updateProfile,
@@ -220,4 +243,6 @@ module.exports = {
   updateAddress,
   deleteAddress,
   setDefaultAddress,
+  getAllBuyers,
+  getAllSellers,
 };

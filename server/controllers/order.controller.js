@@ -371,7 +371,15 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
   // Update order
   const updateData = { status };
-  if (note) updateData["notes.seller"] = note;
+  if (note) {
+    if (userRole === "admin") {
+      updateData["notes.admin"] = note;
+    } else if (userRole === "seller") {
+      updateData["notes.seller"] = note;
+    } else if (userRole === "buyer") {
+      updateData["notes.buyer"] = note;
+    }
+  }
   if (trackingNumber) updateData["shipping.trackingNumber"] = trackingNumber;
   if (estimatedDelivery)
     updateData["shipping.estimatedDelivery"] = estimatedDelivery;
@@ -382,6 +390,18 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
   } else if (status === "delivered") {
     updateData["shipping.deliveredAt"] = new Date();
   }
+
+  // Always push to statusHistory
+  await Order.findByIdAndUpdate(orderId, {
+    $push: {
+      statusHistory: {
+        status,
+        timestamp: new Date(),
+        note: note || "",
+        updatedBy: userId,
+      },
+    },
+  });
 
   const updatedOrder = await Order.findByIdAndUpdate(orderId, updateData, {
     new: true,

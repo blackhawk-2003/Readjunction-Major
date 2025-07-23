@@ -1,5 +1,6 @@
 const PaymentService = require("../services/payment.service");
 const Order = require("../models/order.model");
+const Cart = require("../models/cart.model");
 const User = require("../models/user.model");
 const { ApiError, ApiResponse, asyncHandler } = require("../utils");
 
@@ -142,6 +143,23 @@ class PaymentController {
         },
       },
     });
+
+    // Clear the user's cart after successful payment
+    await Cart.findOneAndUpdate(
+      { buyerId: userId, isActive: true },
+      {
+        items: [],
+        appliedCoupon: null,
+        $set: {
+          "totals.subtotal": 0,
+          "totals.tax": 0,
+          "totals.shipping": 0,
+          "totals.discount": 0,
+          "totals.total": 0,
+          lastUpdated: new Date(),
+        },
+      }
+    );
 
     return res.status(200).json(
       new ApiResponse(

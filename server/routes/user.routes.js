@@ -24,6 +24,8 @@ const {
   updateAddress,
   deleteAddress,
   setDefaultAddress,
+  getAllBuyers,
+  getAllSellers,
 } = require("../controllers/user.controller");
 const { protect } = require("../middleware/auth");
 const validate = require("../middleware/validate");
@@ -55,5 +57,27 @@ router.post("/addresses", validate(addAddressSchema), addAddress);
 router.put("/addresses/:id", validate(updateAddressSchema), updateAddress);
 router.delete("/addresses/:id", deleteAddress);
 router.put("/addresses/:id/default", setDefaultAddress);
+
+// Admin-only: Get all buyers
+router.get(
+  "/buyers",
+  (req, res, next) => {
+    if (req.user.role !== "admin")
+      return res.status(403).json({ success: false, message: "Forbidden" });
+    next();
+  },
+  getAllBuyers
+);
+
+// Admin-only: Get all sellers
+router.get(
+  "/sellers",
+  (req, res, next) => {
+    if (req.user.role !== "admin")
+      return res.status(403).json({ success: false, message: "Forbidden" });
+    next();
+  },
+  getAllSellers
+);
 
 module.exports = router;
